@@ -1,244 +1,162 @@
-# HCltech_Hackathon
+# Climate Time-Series Forecasting and Regression Analysis (Delhi Weather 2020–2024)
 
-#  **Daily Delhi Climate Time Series Forecasting Model*
+This project is developed for the HCLTech Hackathon under the Data Science track. It focuses on end-to-end data processing, exploratory data analysis (EDA), feature engineering, and regression modeling using climate data from Delhi (2020–2024).
 
-##  1. Problem Statement
-Accurate time series forecasting helps in climate research, agriculture planning, environmental monitoring, and energy management.  
-This project builds an *end-to-end forecasting system* using Daily Delhi Climate Data to predict future temperature trends.
+---------------------------------------------------------
+1. Problem Statement
+---------------------------------------------------------
 
-The pipeline includes:  
- Data ingestion  
- Preprocessing  
- Exploratory Data Analysis (EDA)  
- Feature engineering  
- Multiple forecasting models  
- Evaluation  
- Deployment via UI/API  
+The objective is to build a complete data science pipeline that prepares weather data for time-series forecasting and regression tasks. The project aims to analyze climate trends, engineer useful features, clean the dataset, and build predictive models to estimate maximum temperature.
 
+---------------------------------------------------------
+2. Dataset Description
+---------------------------------------------------------
 
+Dataset: Daily weather observations for Delhi from 2013 to 2024 (filtered to 2020–2024).
 
-## 📊 2. Dataset Information
-*Dataset:* Daily Climate Time Series Data (Delhi, India)  
-*Source:* Kaggle  
-*Rows:* ~1450 daily observations  
-*Columns:*
-- date
-- meantemp
-- humidity
-- wind_speed
-- meanpressure
+Main variables:
+- Temperature: temp, tempmax, tempmin, feelslike, heat_index  
+- Humidity: humidity  
+- Wind: windspeed  
+- Pressure: sealevelpressure  
+- Precipitation: precip, precipprob, precipcover  
+- Date information: DATE column used to derive additional time-based features  
 
-*Target Variable:* meantemp  
-*Frequency:* Daily  
+---------------------------------------------------------
+3. Project Pipeline
+---------------------------------------------------------
 
+Step 1: Data Ingestion
+- Loaded CSV file into Pandas
+- Saved dataset into SQLite database (climate.db)
+- Retrieved data using SQL queries
 
+Step 2: Data Preprocessing
+1. Missing Values:
+   - Numeric columns: linear interpolation  
+   - Categorical fields: forward/backward fill  
 
-##  3. System Architecture
+2. Outlier Treatment:
+   - Applied percentile clipping (1st–99th percentile)
 
+3. Stationarity Check:
+   - Performed Augmented Dickey-Fuller (ADF) test  
+   - Applied differencing for non-stationary features  
 
- Raw Dataset → Ingestion (SQLite) → Preprocessing → EDA →
- Feature Engineering → Modeling → Evaluation → Deployment (UI/API)
+4. Scaling:
+   - Used MinMaxScaler on numeric columns  
 
+---------------------------------------------------------
+4. Feature Engineering
+---------------------------------------------------------
 
+1. Time-based features:
+   - year, month, day, weekday, dayofyear, weekofyear
 
+2. Season classification:
+   - Winter, Summer, Monsoon, Autumn
 
-##  4. Data Ingestion
-- CSV loaded into a pandas DataFrame  
-- Inserted into *SQLite* as climate.db  
-- Table name: delhi_climate  
-- Read back into DataFrame for processing  
-- date column converted to datetime and set as index  
+3. Holiday indicator:
+   - Marked major holidays from 2020–2024
 
+4. Interaction features:
+   - temp_range = tempmax - tempmin  
+   - humidity_temp_interaction  
+   - wind_temp_interaction  
 
+5. Derived features:
+   - heat_index using custom formula
 
-##  5. Preprocessing Steps
-Performed essential cleaning:
+6. Feature Selection:
+   - Used correlation matrix to identify top predictors
 
-Step 1: Convert date to datetime & set as index  
-Step 2: Sort data chronologically  
-Step 3: Remove duplicate dates  
-Step 4: Handle missing values (ffill → bfill)  
-Step 5: Detect and correct outliers (Z-score method)  
-Step 6: Convert all data to numeric  
-Step 7: Optional scaling for ML/LSTM models  
+---------------------------------------------------------
+5. Exploratory Data Analysis (EDA)
+---------------------------------------------------------
 
-Result: Clean, continuous, model-ready time series dataset.
+Performed detailed EDA to understand data distribution, patterns, and relationships.
 
+Analyses include:
+- Distribution plots (histograms and KDE plots)
+- Boxplots for outlier visualization
+- Correlation heatmap
+- Temperature trend plots (2020–2024)
+- Seasonal temperature analysis
+- Scatter plots (temperature vs humidity)
 
+Key observations:
+- Temperature values follow stable, near-normal distribution  
+- Humidity varies significantly across seasons  
+- Pressure is tightly grouped  
+- Strong correlations among temperature-based features  
+- Negative correlation between temperature and humidity  
 
-# 6. Exploratory Data Analysis (EDA)
-Conducted visual and statistical analysis:
+---------------------------------------------------------
+6. Regression Modeling
+---------------------------------------------------------
 
-- Line plot of mean temperature  
-- Yearly and seasonal patterns  
-- Seasonal decomposition (trend, seasonal, residual)  
-- Distribution analysis of all features  
-- Correlation heatmap  
-- Outlier visualization  
+Objective: Predict maximum temperature (tempmax)
 
-Key insights:  
-- Strong yearly temperature seasonality  
-- Humidity and pressure influence temperature  
-- Data trends show expected climate behavior  
-
-
-
-# 7. Feature Engineering
-
-To improve model performance, the following features were created:
-
-# Lag Features
-- lag_1, lag_7, lag_14, lag_30
-
-# Rolling Window Features
-- roll_mean_7, roll_mean_30  
-- roll_std_7
-
-# Date-time Features
-- Day of week  
-- Month  
-- Year  
-- Day of month  
-
-These help ML and neural models learn temporal relationships.
-
-
-
-# 8. Modeling Approaches
-
-Multiple models were built and evaluated:
-
-# Baseline Model
-- Last value carried forward
-
-# Statistical Models
-- ARIMA  
-- SARIMA  
-- SARIMAX (with regressors)
-
-# Prophet Model
-- Captures yearly and weekly patterns
-
-# Machine Learning Models
+Models used:
 - Linear Regression  
-- Random Forest  
-- XGBoost Regression  
+- RandomForest Regressor  
 
-# Deep Learning Model (Optional)
-- LSTM for sequence prediction  
+Data split:
+- 80% training  
+- 20% testing  
 
-Models were trained using 80% of data and tested on 20% (time-based split).
+Metrics computed:
+- RMSE  
+- MAE  
+- MAPE  
+- Weighted MAPE  
+- R² Score  
 
+Random Forest outperformed Linear Regression.
 
+Hyperparameter tuning was done using GridSearchCV with:
+- n_estimators: [100, 200, 300]
+- max_depth: [5, 10, 20, None]
+- min_samples_split: [2, 5, 10]
 
-# 9. Evaluation Metrics
+Best model: Tuned RandomForest.
 
-Models were evaluated using:
+---------------------------------------------------------
+7. Tech Stack
+---------------------------------------------------------
 
-- *RMSE* – Root Mean Squared Error  
-- *MAE* – Mean Absolute Error  
-- *MAPE* – Mean Absolute Percentage Error  
-- *R² Score* (for ML models)
+- Python  
+- Pandas  
+- NumPy  
+- Matplotlib  
+- Seaborn  
+- SQLite3  
+- Scikit-Learn  
+- Statsmodels  
+- Google Colab  
 
-Visual evaluation:
-- Actual vs Predicted plot  
-- Forecast future 30-day temperatures  
-- Residual analysis  
+---------------------------------------------------------
+8. Folder Structure
+---------------------------------------------------------
 
+climate.db  
+notebook.ipynb  
+README.md  
+dataset.csv  
 
+---------------------------------------------------------
+9. Future Enhancements
+---------------------------------------------------------
 
-# 10. Deployment
+- Implement SARIMA, Prophet, or LSTM for time-series forecasting  
+- Build visualization dashboard using Streamlit  
+- Deploy model using Flask or FastAPI  
+- Build automated retraining pipeline  
 
-Two deployment options available:
+---------------------------------------------------------
+10. Contribution
+---------------------------------------------------------
 
-# Streamlit Interface
-- Upload CSV  
-- View EDA charts  
-- Generate forecast  
-- Display future trend graph  
+Deepika – Data Scientist  
+Performed EDA, preprocessing, feature engineering, and regression modeling.
 
-# FastAPI / Flask API
-- /predict endpoint returns JSON forecast  
-- Can integrate with dashboards/UI  
-
-
-
-# 11. Project Folder Structure
-
-
-.
-├── data/
-│   └── DailyDelhiClimateTrain.csv
-├── database/
-│   └── climate.db
-├── notebooks/
-│   ├── 01_preprocessing.ipynb
-│   ├── 02_eda.ipynb
-│   ├── 03_feature_engineering.ipynb
-│   ├── 04_modeling.ipynb
-│   └── 05_forecasting.ipynb
-├── src/
-│   ├── data_loader.py
-│   ├── preprocessing.py
-│   ├── feature_engineering.py
-│   ├── model_arima.py
-│   ├── model_ml.py
-│   ├── evaluate.py
-│   └── utils.py
-├── app/
-│   └── streamlit_app.py
-├── README.md
-└── requirements.txt
-
-
-
-
-# 12. How to Run the Project
-
-# *1. Install dependencies*
-
-pip install -r requirements.txt
-
-
-# *2. Run preprocessing & EDA notebooks*
-Use Jupyter or Google Colab.
-
-# *3. Train models*
-Run modeling notebooks.
-
-# *4. Run Streamlit app*
-
-streamlit run app/streamlit_app.py
-
-
-
-
-# 13. Deliverables
-
-- Cleaned dataset & SQLite DB  
-- Preprocessing pipeline  
-- EDA visualizations & insights  
-- Feature engineering notebook  
-- Models (ARIMA, Prophet, ML)  
-- Evaluation metrics  
-- Forecast visualization  
-- Deployment UI/API  
-- Final README + repository structure  
-
-
-
-# 14. Conclusion
-
-This project demonstrates a complete *time series forecasting pipeline* using real-world climate data.  
-It is extendable to:
-
-- Weather prediction systems  
-- Agricultural planning  
-- Energy demand forecasting  
-- Environmental monitoring  
-
-The modular code allows easy swapping of models and datasets for future scaling.
-
-
-      
-       
