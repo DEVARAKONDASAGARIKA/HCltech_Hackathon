@@ -153,10 +153,5 @@ dataset.csv
 - Deploy model using Flask or FastAPI  
 - Build automated retraining pipeline  
 
----------------------------------------------------------
-10. Contribution
----------------------------------------------------------
 
-Deepika – Data Scientist  
-Performed EDA, preprocessing, feature engineering, and regression modeling.
 
