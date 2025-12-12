@@ -1,4 +1,4 @@
-# HCltech_Hackathon
+# HCltech_Hack
 
 #  **Daily Delhi Climate Time Series Forecasting Model*
 
