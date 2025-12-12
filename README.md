@@ -1,157 +1,99 @@
-# Climate Time-Series Forecasting and Regression Analysis (Delhi Weather 2013–2024)
+HCL Tech Stock Time Series Forecasting — README
 
-This project is developed for the HCLTech Hackathon under the Data Science track. It focuses on end-to-end data processing, exploratory data analysis (EDA), feature engineering, and regression modeling using climate data from Delhi (2020–2024).
+This repository contains a complete workflow for time-series forecasting of HCL Technologies Ltd. stock data, implemented using Python in a Jupyter Notebook.
+The notebook includes data ingestion, preprocessing, EDA, stationarity checks, model building, forecasting, and evaluation.
 
----------------------------------------------------------
-1. Problem Statement
----------------------------------------------------------
+HCL_Tech.ipynb                                      # Main notebook
+README.md                                           # Documentation
+kaggle_weather_2013_to_2024.csv                     # CSV file
+Design_timeseriesforecast.md                        # Design (pipeline)
 
-The objective is to build a complete data science pipeline that prepares weather data for time-series forecasting and regression tasks. The project aims to analyze climate trends, engineer useful features, clean the dataset, and build predictive models to estimate maximum temperature.
+1. Introduction
+This project performs end-to-end time series analysis on HCL Tech stock prices.
+The goal is to build a forecasting model using techniques like:
+ARIMA / SARIMA
+Prophet
+LSTM (if used)
+Moving averages
+Exponential smoothing
+The notebook demonstrates how stock prices evolve over time and generates future predictions.
 
----------------------------------------------------------
-2. Dataset Description
----------------------------------------------------------
+Data Ingestion Layer
+Source:
+The dataset is loaded from the local environment and optionally inserted into an SQL database through the implemented data ingestion layer.
+Steps included:
+Loading CSV
+Creating SQLite DB
+Pushing cleaned data into DB table
+Fetching back from DB
+Schema validation
+Checking nulls
+Data types
+Column names
+Missing values
+Outliers
 
-Dataset: Daily weather observations for Delhi from 2013 to 2024 (filtered to 2020–2024).
+Exploratory Data Analysis (EDA)
+Visualizations included:
+Line plot of closing price
+Volume trends
+Moving averages
+Seasonal decomposition (trend, seasonality, residuals)
 
-Main variables:
-- Temperature: temp, tempmax, tempmin, feelslike, heat_index  
-- Humidity: humidity  
-- Wind: windspeed  
-- Pressure: sealevelpressure  
-- Precipitation: precip, precipprob, precipcover  
-- Date information: DATE column used to derive additional time-based features  
+Stationarity Checks
+Methods used:
+Augmented Dickey-Fuller (ADF) test
+Rolling statistics
+Differencing
+ADF Hypothesis
+H₀: Series is non-stationary
+H₁: Series is stationary
 
----------------------------------------------------------
-3. Project Pipeline
----------------------------------------------------------
+Model Building
+Depending on your notebook content, models may include:
+ARIMA / SARIMA
+p, d, q parameter selection
+AIC comparison
 
-Step 1: Data Ingestion
-- Loaded CSV file into Pandas
-- Saved dataset into SQLite database (climate.db)
-- Retrieved data using SQL queries
+Forecasting Results
+Predictions generated for:
+Next 30 days period
 
-Step 2: Data Preprocessing
-1. Missing Values:
-   - Numeric columns: linear interpolation  
-   - Categorical fields: forward/backward fill  
+Model Evaluation
+Metrics used:
+Naive Forecast(BaseLine)
+RMSE         0.346
+MAE          0.277
+MAPE         20%
 
-2. Outlier Treatment:
-   - Applied percentile clipping (1st–99th percentile)
+ARIMA:
+RMSE         5.90
+MAE          4.61
+MAPE         20.72%
 
-3. Stationarity Check:
-   - Performed Augmented Dickey-Fuller (ADF) test  
-   - Applied differencing for non-stationary features  
+SARIMA:
+RMSE         5.370
+MAE          4.256
+MAPE         19%
 
-4. Scaling:
-   - Used MinMaxScaler on numeric columns  
+HOLT WINTER:
+RMSE         7.483
+MAE          6.298
+MAPE         27.59%
 
----------------------------------------------------------
-4. Feature Engineering
----------------------------------------------------------
+ETS:
+RMSE         7.479
+MAE          6.30
+MAPE         27.6%
 
-1. Time-based features:
-   - year, month, day, weekday, dayofyear, weekofyear
+Conclusion:
+Summaries may include:
+The model that performed best
+Observations from trends and patterns
+Forecasting reliability
+Limitations
+Example:
+The SARIMA(1,1,1)(1,0,1)[12] model provided the lowest RMSE and captures seasonal trends effectively.
 
-2. Season classification:
-   - Winter, Summer, Monsoon, Autumn
-
-3. Holiday indicator:
-   - Marked major holidays from 2020–2024
-
-4. Interaction features:
-   - temp_range = tempmax - tempmin  
-   - humidity_temp_interaction  
-   - wind_temp_interaction  
-
-5. Derived features:
-   - heat_index using custom formula
-
-6. Feature Selection:
-   - Used correlation matrix to identify top predictors
-
----------------------------------------------------------
-5. Exploratory Data Analysis (EDA)
----------------------------------------------------------
-
-Performed detailed EDA to understand data distribution, patterns, and relationships.
-
-Analyses include:
-- Distribution plots (histograms and KDE plots)
-- Boxplots for outlier visualization
-- Correlation heatmap
-- Temperature trend plots (2020–2024)
-- Seasonal temperature analysis
-- Scatter plots (temperature vs humidity)
-
-Key observations:
-- Temperature values follow stable, near-normal distribution  
-- Humidity varies significantly across seasons  
-- Pressure is tightly grouped  
-- Strong correlations among temperature-based features  
-- Negative correlation between temperature and humidity  
-
----------------------------------------------------------
-6. Regression Modeling
----------------------------------------------------------
-
-Objective: Predict maximum temperature (tempmax)
-
-Models used:
-- Linear Regression  
-- RandomForest Regressor  
-
-Data split:
-- 80% training  
-- 20% testing  
-
-Metrics computed:
-- RMSE  
-- MAE  
-- MAPE  
-- Weighted MAPE  
-- R² Score  
-
-Random Forest outperformed Linear Regression.
-
-Hyperparameter tuning was done using GridSearchCV with:
-- n_estimators: [100, 200, 300]
-- max_depth: [5, 10, 20, None]
-- min_samples_split: [2, 5, 10]
-
-Best model: Tuned RandomForest.
-
----------------------------------------------------------
-7. Tech Stack
----------------------------------------------------------
-
-- Python  
-- Pandas  
-- NumPy  
-- Matplotlib  
-- Seaborn  
-- SQLite3  
-- Scikit-Learn  
-- Statsmodels  
-- Google Colab  
-
----------------------------------------------------------
-8. Folder Structure
----------------------------------------------------------
-
-climate.db  
-notebook.ipynb  
-README.md  
-dataset.csv  
-
----------------------------------------------------------
-9. Future Enhancements
----------------------------------------------------------
-
-- Implement SARIMA, Prophet, or LSTM for time-series forecasting  
-- Build visualization dashboard using Streamlit  
-- Deploy model using Flask or FastAPI  
-- Build automated retraining pipeline  
-
-
-
+How to Run:
+jupyter notebook HCL_Tech.ipynb
