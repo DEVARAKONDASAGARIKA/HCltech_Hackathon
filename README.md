@@ -54,13 +54,13 @@ The pipeline includes:
 ##  5. Preprocessing Steps
 Performed essential cleaning:
 
-# Step 1: Convert date to datetime & set as index  
-# Step 2: Sort data chronologically  
-# Step 3: Remove duplicate dates  
-# Step 4: Handle missing values (ffill → bfill)  
-# Step 5: Detect and correct outliers (Z-score method)  
-# Step 6: Convert all data to numeric  
-# Step 7: Optional scaling for ML/LSTM models  
+Step 1: Convert date to datetime & set as index  
+Step 2: Sort data chronologically  
+Step 3: Remove duplicate dates  
+Step 4: Handle missing values (ffill → bfill)  
+Step 5: Detect and correct outliers (Z-score method)  
+Step 6: Convert all data to numeric  
+Step 7: Optional scaling for ML/LSTM models  
 
 Result: Clean, continuous, model-ready time series dataset.
 
